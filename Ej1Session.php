@@ -8,18 +8,18 @@
 <body>
     <form action="" method="GET">
         <h1>Supermarket managment</h1>
-        work name: <input type="text" name="workName"> <br> <br>
+        work name: <input type="text" name="workName" required> <br> <br>
 
         <h1>Choose product:</h1>
-        <select name="producto" id="producto">
+        <select name="producto" id="producto" required>
             <option value="refresco">Refresco</option>
             <option value="leche">Leche</option>
         </select>
         <h1>Product quantity:</h1>
-        <input type="number" name="cantidadProducto"> <br> <br>
+        <input type="number" name="cantidadProducto" required> <br> <br>
         <input type="submit" value="add" name="add">
         <input type="submit" value="remove" name="remove">
-        <input type="submit" value="reset" name="reset">
+        <input type="reset" value="reset" name="reset">
     </form>
     <div class="inventario">
         <h1>Inventario:</h1>
@@ -28,31 +28,42 @@
 </html>
 
 <?php 
-  session_start();
-  
+session_start();
 
-  $inventario = [
-    "refresco" => 0,
-    "leche" => 0
-];
+if(!isset($_SESSION['inventario'])){
+
+    $_SESSION['inventario'] = [
+        "refresco" => 0,
+        "leche" => 0
+    ];
+   
+}
 
   if (isset($_GET["workName"]) && isset($_GET["producto"]) && isset($_GET["cantidadProducto"])) {
 
     $_SESSION['workName1'] = $_GET["workName"];
-    $productoEelegido = $_SESSION['producto1'] = $_GET["producto"];
+    $productoElegido = $_SESSION['producto1'] = $_GET["producto"];
     $prodcutoCantidad = $_SESSION['cantidadProducto1'] = $_GET["cantidadProducto"];
 
-    $_SESSION['inventario'] = $inventario;
-
-
     if(isset($_GET["add"])){
-        $_SESSION['inventario'][$productoEelegido] += $prodcutoCantidad;
-        var_dump($inventario);
-        echo "Leche:". $inventario["leche"];
+        $_SESSION['inventario'][$productoElegido] += $prodcutoCantidad;
+        echo "Worker: ". $_SESSION['workName1'] ."<br> <br>";
+        echo "Refresco: ". $_SESSION['inventario']["refresco"] ."<br> <br>";
+        echo "Leche: ". $_SESSION['inventario']["leche"];
     }
 
+    if(isset($_GET["remove"])){
+        if($_SESSION['inventario'][$productoElegido] - $prodcutoCantidad >= 0){
+            $_SESSION['inventario'][$productoElegido] -= $prodcutoCantidad;
+            echo "Worker: ". $_SESSION['workName1'] ."<br> <br>";
+            echo "Refresco: ". $_SESSION['inventario']["refresco"] ."<br> <br>";
+            echo "Leche: ". $_SESSION['inventario']["leche"];
+        }else{
+            echo "Worker: ". $_SESSION['workName1'] ."<br> <br>";
+            echo "Refresco: ". $_SESSION['inventario']["refresco"] ."<br> <br>";
+            echo "Leche: ". $_SESSION['inventario']["leche"] ."<br> <br>";
+            echo "No se puede restar mas productos de los que hay";
+        }
+    }
 }
-
-
-
 ?>
